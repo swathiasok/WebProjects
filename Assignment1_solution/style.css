@@ -3,18 +3,30 @@ body {
     align-items: center;
     justify-content: center;
     margin: 0;
+    background-color: #000;
+}
+
+.main-container {
+    background-color: white;
 }
 
 /* Navbar */
 .navbar {
     display: flex;
-    background-color: antiquewhite;
-    padding: 2%;
+    padding: 2.5% 2%;
     justify-content: space-between;
+    font-family: 'Roboto', sans-serif;
+    background-color: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .nav-title {
-    margin-left: 8%;
+    margin-left: 10%;
+    color: #ae9453;
+    font-weight: normal;
+    font-size: 90%;
 }
 
 .nav-links {
@@ -22,11 +34,26 @@ body {
     margin: 0;
     display: flex;
     justify-content: center;
-    margin-right: 12%;
+    margin-right: 15%;
+    font-size: 85%;
 }
 
 .nav-links li {
-    padding-left: 20%;
+    padding-left: 23%;
+}
+
+.nav-link {
+    color: #000;
+    text-decoration: none;
+}
+
+.active {
+    color: #ae9453;
+}
+
+.nav-link:active {
+
+    color: #ae9453;
 }
 
 
@@ -42,8 +69,10 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
-    line-height: 2;
-    letter-spacing: 1.5rem;
+    line-height: 1.7;
+    letter-spacing: 1rem;
+    font-family: 'EB Garamond', serif;
+    font-size: 50px;
 }
 
 
@@ -66,9 +95,11 @@ body {
     top: 20%;
     left: 50%;
     color: white;
-    font-size: 24px;
-    font-weight: bold;
     transform: translate(-50%, -50%);
+    font-family: 'Almarai', sans-serif;
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: 1rem;
 }
 
 .flower-text {
@@ -78,34 +109,62 @@ body {
     color: white;
     transform: translate(-50%, -50%);
     text-align: center;
+    font-family: 'Merriweather', serif;
+    font-size: 15px;
+    letter-spacing: 0.3rem;
+    line-height: 2.5;
+    white-space: nowrap;
 }
 
-.flower-button {
+.button {
     position: absolute;
-    top: 70%;
+    top: 75%;
     left: 50%;
     transform: translate(-50%, -50%);
-}
-
-.quote {
-    padding-top: 10%;
+    display: inline-block;
+    border: 1px solid white;
+    color: white;
     text-align: center;
+    font-family: 'Almarai', sans-serif;
+    font-size: 15px;
+    padding: 3% 25%;
 }
 
 .testimonial {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-direction: column;
+}
+
+.quote {
+    display: block;
+    padding-top: 15%;
+    text-align: center;
+    font-family: 'Playfair', serif;
+    font-size: 80px;
+    margin: 0;
 }
 
 .testimonial-text {
     font-size: 2rem;
     text-align: center;
+    letter-spacing: 0.2rem;
+    line-height: 2;
+    font-family: 'EB Garamond', serif;
+    font-weight: 600;
+    margin-top: 0;
 }
 
 .testimonial-name {
     text-align: center;
     padding-bottom: 10%;
+    color: #ae9453;
+    font-family: 'Roboto', sans-serif;
+    font-size: 80%;
+    font-weight: 500;
+    letter-spacing: 0.03rem;
+
 }
 
 .fourth-container {
@@ -128,30 +187,59 @@ body {
     left: 50%;
     color: white;
     transform: translate(-50%, -50%);
-    text-align: center;
+    font-family: 'Almarai', sans-serif;
+    font-size: 30px;
+    font-weight: 500;
+    letter-spacing: 1rem;
 }
 
 .footer {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    background-color: sandybrown;
+    background-color: #ae9453;
     margin: 6%;
+    flex-direction: row;
 }
 
-.footer p {
-    padding: 5%;
+.contact-container {
+    flex: 2;
+    display: flex;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size: 75%;
+    line-height: 1.5;
+    letter-spacing: 0.03rem;
+    padding: 2% 0 2% 5%;
+    margin-left: 5%;
+}
+
+.contact {
+    padding: 5% 4%;
 }
 
 .vl {
-    border-left: 1px solid black;
+    border-left: 1px solid rgb(255, 255, 255);
     height: 50px;
+    margin: 7% 0;
+    align-items: flex-start;
 }
 
-.by {
-    align-self: flex-start;
+.consultation-container {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 1;
+    margin: 0 5%;
 }
 
-.fa {
-    margin: 0 10%;
+.footer-button {
+    display: inline-block;
+    border: 1px solid white;
+    color: white;
+    text-align: center;
+    font-family: 'Almarai', sans-serif;
+    font-size: 85%;
+    padding: 3% 5%;
 }
