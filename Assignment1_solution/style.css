@@ -90,13 +90,15 @@ body {
     font-size: 50px;
 }
 
+.bottom-page {
+    margin: 7% 5% 2% 5%;
+}
+
 .middle-container {
-    padding: 7% 0 0 2%;
     display: flex;
     justify-content: space-around;
     max-width: 1000px;
     height: 475px;
-    margin: 0 2.5%;
 }
 
 /* Flower Image */
@@ -104,13 +106,11 @@ body {
     position: relative;
     text-align: left;
     flex: 1;
-    margin-right: 5%;
 }
 
 .image-container {
     flex: 2;
-    text-align: center;
-    margin-right: 1%;
+    text-align: right;
 }
 
 .flower-one {
@@ -120,7 +120,7 @@ body {
 }
 
 .image-two {
-    width: 95%;
+    width: 90%;
     height: 90%;
     object-fit: cover;
 }
@@ -206,9 +206,9 @@ body {
     position: relative;
     display: block;
     text-align: center;
-    max-width: 1000px;
-    margin: 0 auto;
+    max-width: 900px;
     z-index: 2;
+    margin: 7% 0;
 }
 
 .parallax-image {
@@ -277,7 +277,7 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: #ae9453;
-    margin: 8% 4.5% 4%;
+    margin-top: 12%;
     flex-direction: row;
 }
 
