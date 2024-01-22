@@ -28,7 +28,7 @@ body {
 }
 
 .nav-title {
-    margin-left: 10%;
+    margin-left: 8%;
     color: #ae9453;
     font-weight: normal;
     font-size: 90%;
@@ -39,7 +39,7 @@ body {
     margin: 0;
     display: flex;
     justify-content: center;
-    margin-right: 15%;
+    margin-right: 20%;
     font-size: 85%;
 }
 
@@ -61,12 +61,12 @@ body {
 }
 
 /* Top Image */
-.top-image {
+.top-image-div {
     position: relative;
     text-align: center;
 }
 
-.parallax-top-image {
+.top-image {
     background-image: url('images/image3.png');
     height: 100vh;
     background-attachment: fixed;
@@ -78,7 +78,7 @@ body {
     margin: 0;
 }
 
-.text-one {
+.image-one-text {
     position: absolute;
     top: 40%;
     left: 50%;
@@ -162,7 +162,7 @@ body {
     text-align: center;
     font-family: 'Almarai', sans-serif;
     font-size: 13px;
-    padding: 3% 25%;
+    padding: 4% 25%;
 }
 
 .testimonial {
@@ -211,7 +211,7 @@ body {
     margin: 7% 0;
 }
 
-.parallax-image {
+.second-image {
     background-image: url('images/image2.png');
     height: 100vh;
     background-attachment: fixed;
@@ -320,5 +320,5 @@ body {
     text-align: center;
     font-family: 'Almarai', sans-serif;
     font-size: 75%;
-    padding: 4% 5%;
+    padding: 5% 7%;
 }
