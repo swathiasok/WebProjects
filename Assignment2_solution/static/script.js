@@ -1,3 +1,5 @@
+let previousInput = "";
+
 function getData(tab) {
     let stock_symbol = document.getElementById('smbl').value;
 
@@ -47,6 +49,23 @@ function getData(tab) {
     }
 
     return false;
+}
+
+function submitData(event) {
+    event.preventDefault();
+    let currentInput = document.getElementById('smbl').value;
+
+    console.log(previousInput);
+    console.log(currentInput);
+
+    if (previousInput.length == 0) {
+        getData('company');
+    } else if (currentInput != previousInput) {
+        getData('company');
+    }
+
+    previousInput = currentInput;
+
 }
 
 function clearForm() {

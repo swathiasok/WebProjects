@@ -29,10 +29,10 @@
         <h1 class="title">Stock Search</h1>
         <div class="form-div">
             <form name="stock_search" class="search-form" method="post" action="/company_data"
-                onsubmit="return getData('company');">
+                onsubmit="submitData(event);">
                 <div class="div1">
                     <img class="search-icon" src="{{ url_for('static', filename='img/search-solid.svg') }}"
-                        onclick="return getData('company');">
+                        onclick="submitData(event);">
                     <input type=" text" id="smbl" name="symbol" placeholder="Enter Stock Ticker Symbol"
                         autocomplete="off" required>
                 </div>
