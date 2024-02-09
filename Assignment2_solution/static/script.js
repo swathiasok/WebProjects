@@ -194,7 +194,7 @@ function buildChart(data) {
 
         subtitle: {
             useHTML: true,
-            text: '<a href = "https://polygon.io"> Source: Polygon.io </a>',
+            text: '<a target="_blank" rel="noopener noreferrer" href = "https://polygon.io"> Source: Polygon.io </a>',
 
         },
 
@@ -264,7 +264,7 @@ function newsRow(response) {
         <div class="news-content">
             <p class="news-title">${response.headline}</p>
             <p class="news-description">${response.datetime}</p>
-            <a href="${response.url}" class="news-link">See Original Post</a>
+            <a target="_blank" rel="noopener noreferrer" href="${response.url}" class="news-link">See Original Post</a>
         </div>
     </div>
     `;
@@ -273,9 +273,15 @@ function newsRow(response) {
 function showNews(response) {
     event.preventDefault();
     hideTabs("news");
-    document.getElementById("news").innerHTML = ""
-    for (i = 0; i < 5; i++) {
-        document.getElementById("news").innerHTML += newsRow(response[i]);
+    document.getElementById("news").innerHTML = "";
+    if (response.length < 5) {
+        for (i = 0; i < response.length; i++) {
+            document.getElementById("news").innerHTML += newsRow(response[i]);
+        }
+    } else {
+        for (i = 0; i < 5; i++) {
+            document.getElementById("news").innerHTML += newsRow(response[i]);
+        }
     }
 }
 
