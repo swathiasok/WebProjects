@@ -15,9 +15,9 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/company_data', methods=['POST'])
+@app.route('/company_data', methods=['GET', 'POST'])
 def company():
-    stock_symbol = request.get_data(as_text=True)
+    stock_symbol = request.get_data(as_text=True) or request.args.get('symbol')
     response = finnhub_client.company_profile2(symbol=stock_symbol)
     if response:
         value = {
@@ -34,9 +34,9 @@ def company():
     return value
 
 
-@app.route('/stock_data', methods=["POST"])
+@app.route('/stock_data', methods=['GET', 'POST'])
 def stocks():
-    stock_symbol = request.get_data(as_text=True)
+    stock_symbol = request.get_data(as_text=True) or request.args.get('symbol')
     response = finnhub_client.quote(symbol=stock_symbol)
     response_2 = finnhub_client.recommendation_trends(symbol=stock_symbol)
 
@@ -59,9 +59,9 @@ def stocks():
     return value
 
 
-@app.route('/charts_data', methods=['POST'])
+@app.route('/charts_data', methods=['GET', 'POST'])
 def charts():
-    stock_symbol = request.get_data(as_text=True)
+    stock_symbol = request.get_data(as_text=True) or request.args.get('symbol')
     today = date.today()
     from_date = today+relativedelta(months=-6, days=-1)
     url = "https://api.polygon.io/v2/aggs/ticker/" + stock_symbol.upper() + \
@@ -80,9 +80,9 @@ def charts():
     return jsonify({'price_array': price_array, 'volume_array': volume_array})
 
 
-@app.route('/news_data', methods=['POST'])
+@app.route('/news_data', methods=['GET', 'POST'])
 def news():
-    stock_symbol = request.get_data(as_text=True)
+    stock_symbol = request.get_data(as_text=True) or request.args.get('symbol')
     today = date.today()
     last_month = today+relativedelta(months=-1)
     responses = finnhub_client.company_news(
