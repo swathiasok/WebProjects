@@ -1,6 +1,9 @@
-runtime: python
-env: flex
+runtime: python39
+env: standard
 entrypoint: gunicorn -b :$PORT app:app
 runtime_config:
   operating_system: "ubuntu18"
   runtime_version: "3.9"
+handlers:
+  - url: .*
+    script: auto

@@ -1,10 +1,12 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from datetime import *
 from dateutil.relativedelta import *
 import finnhub
 import requests
 
-app = Flask(__name__)
+# app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='static')
+
 app.debug = True
 finnhub_client = finnhub.Client(
     api_key="cmr19q1r01ql2lmtdgi0cmr19q1r01ql2lmtdgig")
@@ -12,12 +14,13 @@ finnhub_client = finnhub.Client(
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return send_from_directory('static', 'index.html')
 
 
-@app.route('/company_data', methods=['GET', 'POST'])
+@app.route('/company_data', methods=['GET'])
 def company():
     stock_symbol = request.get_data(as_text=True) or request.args.get('symbol')
+    print(stock_symbol)
     response = finnhub_client.company_profile2(symbol=stock_symbol)
     if response:
         value = {
@@ -34,7 +37,7 @@ def company():
     return value
 
 
-@app.route('/stock_data', methods=['GET', 'POST'])
+@app.route('/stock_data', methods=['GET'])
 def stocks():
     stock_symbol = request.get_data(as_text=True) or request.args.get('symbol')
     response = finnhub_client.quote(symbol=stock_symbol)
@@ -59,7 +62,7 @@ def stocks():
     return value
 
 
-@app.route('/charts_data', methods=['GET', 'POST'])
+@app.route('/charts_data', methods=['GET'])
 def charts():
     stock_symbol = request.get_data(as_text=True) or request.args.get('symbol')
     today = date.today()
@@ -80,7 +83,7 @@ def charts():
     return jsonify({'price_array': price_array, 'volume_array': volume_array})
 
 
-@app.route('/news_data', methods=['GET', 'POST'])
+@app.route('/news_data', methods=['GET'])
 def news():
     stock_symbol = request.get_data(as_text=True) or request.args.get('symbol')
     today = date.today()
@@ -88,7 +91,6 @@ def news():
     responses = finnhub_client.company_news(
         symbol=stock_symbol, _from=last_month, to=today)
 
-    print(responses[0])
     values = []
 
     for response in responses:

@@ -1,12 +1,12 @@
 let previousInput = "";
 
-function getData(tab) {
+function getData(tab, event) {
     let stock_symbol = document.getElementById('smbl').value;
 
     if (stock_symbol) {
         var xml_req = new XMLHttpRequest;
 
-        xml_req.open('POST', `/${tab}_data`, true);
+        xml_req.open('GET', `/${tab}_data?symbol=${stock_symbol}`, true);
         xml_req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8');
 
         xml_req.send(stock_symbol);
@@ -22,22 +22,23 @@ function getData(tab) {
                         document.getElementById("empty-symbol").style.display = "none";
                         switch (tab) {
                             case "company":
-                                showCompany(res);
+                                showCompany(event, res);
                                 break;
                             case "stock":
-                                showStock(res);
+                                showStock(event, res);
                                 break;
                             case "charts":
-                                showChart(res);
+                                showChart(event, res);
                                 break;
                             case "news":
-                                showNews(res);
+                                showNews(event, res);
                                 break;
                         }
                     }
                 } else {
                     document.getElementById("display").style.display = "none";
                     document.getElementById("empty-div").style.display = "flex";
+                    document.getElementById("empty-symbol").style.display = "none";
                 }
             }
         }
@@ -46,6 +47,7 @@ function getData(tab) {
         console.log('no input');
         document.getElementById("display").style.display = "none";
         document.getElementById("empty-symbol").style.display = "flex";
+        document.getElementById("empty-div").style.display = "none";
     }
 
     return false;
@@ -55,23 +57,19 @@ function submitData(event) {
     event.preventDefault();
     let currentInput = document.getElementById('smbl').value;
 
-    console.log(previousInput);
-    console.log(currentInput);
-
-    if (previousInput.length == 0) {
-        getData('company');
-    } else if (currentInput != previousInput) {
-        getData('company');
+    console.log(previousInput, currentInput);
+    if ((previousInput.length == 0) || (currentInput != previousInput) || (currentInput === previousInput && document.getElementById("display").style.display == "none")) {
+        getData('company', event);
     }
 
     previousInput = currentInput;
-
 }
 
 function clearForm() {
     document.getElementById("smbl").value = "";
     document.getElementById("display").style.display = "none";
     document.getElementById("empty-div").style.display = "none";
+    document.getElementById("empty-symbol").style.display = "none";
 }
 
 function hideTabs(currentTab) {
@@ -88,7 +86,7 @@ function hideTabs(currentTab) {
     document.getElementById("empty-symbol").style.display = "none";
 }
 
-function showCompany(response) {
+function showCompany(event, response) {
     event.preventDefault();
     hideTabs("company");
     document.getElementById("company_logo").src = response.logo;
@@ -99,7 +97,7 @@ function showCompany(response) {
     document.getElementById("company_category").textContent = response.category;
 }
 
-function showStock(response) {
+function showStock(event, response) {
     event.preventDefault();
     hideTabs("stock");
 
@@ -111,12 +109,12 @@ function showStock(response) {
     document.getElementById("low_price").textContent = response.low_price;
 
     if (response.change > 0) {
-        document.getElementById("change").innerHTML = `${response.change}<img id="change_percent_img" style="vertical-align: middle;" src="/static/img/GreenArrowUp.png">`;
-        document.getElementById("change_percent").innerHTML = `${response.change_percent}<img id="change_percent_img" style="vertical-align: middle;" src="/static/img/GreenArrowUp.png">`;
+        document.getElementById("change").innerHTML = `${response.change}<img id="change_percent_img" style="vertical-align: middle;" src="img/GreenArrowUp.png">`;
+        document.getElementById("change_percent").innerHTML = `${response.change_percent}<img id="change_percent_img" style="vertical-align: middle;" src="img/GreenArrowUp.png">`;
 
     } else {
-        document.getElementById("change").innerHTML = `${response.change}<img id="change_percent_img" style="vertical-align: middle;" src="/static/img/RedArrowDown.png">`;
-        document.getElementById("change_percent").innerHTML = `${response.change_percent}<img id="change_percent_img" style="vertical-align: middle;" src="/static/img/RedArrowDown.png">`;
+        document.getElementById("change").innerHTML = `${response.change}<img id="change_percent_img" style="vertical-align: middle;" src="img/RedArrowDown.png">`;
+        document.getElementById("change_percent").innerHTML = `${response.change_percent}<img id="change_percent_img" style="vertical-align: middle;" src="img/RedArrowDown.png">`;
     }
 
     document.getElementById("strong_sell").textContent = response.strong_sell;
@@ -189,7 +187,7 @@ function buildChart(data) {
         },
 
         title: {
-            text: `Stock Price ${stock_symbol} ${currentDate}`
+            text: `Stock Price ${stock_symbol.toUpperCase()} ${currentDate}`
         },
 
         subtitle: {
@@ -250,7 +248,7 @@ function buildChart(data) {
 }
 
 
-function showChart(response) {
+function showChart(event, response) {
     event.preventDefault();
     hideTabs("chart");
 
@@ -270,7 +268,7 @@ function newsRow(response) {
     `;
 }
 
-function showNews(response) {
+function showNews(event, response) {
     event.preventDefault();
     hideTabs("news");
     document.getElementById("news").innerHTML = "";
@@ -282,16 +280,5 @@ function showNews(response) {
         for (i = 0; i < 5; i++) {
             document.getElementById("news").innerHTML += newsRow(response[i]);
         }
-    }
-}
-
-function submitForm() {
-
-    if (document.getElementById('smbl').checkValidity()) {
-        getData('company');
-    } else {
-        console.log('here2');
-        form.reportValidity();
-        return false;
     }
 }
