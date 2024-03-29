@@ -1,0 +1,130 @@
+.stock-container {
+  width: 80%;
+}
+
+.img-div {
+  display: flex;
+  width: 50%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.img-fluid {
+  align-items: stretch;
+}
+
+.tabs {
+  margin-top: 5%;
+}
+
+::ng-deep .mdc-text-field--filled {
+  background-color: white !important;
+}
+
+::ng-deep .mat-mdc-form-field:hover {
+  background-color: white !important;
+}
+
+
+::ng-deep .mdc-line-ripple {
+  display: none !important;
+}
+
+::ng-deep .mat-mdc-form-field-input-control.mdc-text-field__input,
+.mat-mdc-text-field-wrapper {
+  display: inline-block;
+  width: 80%;
+}
+
+::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+.summary-content {
+  display: flex;
+}
+
+.left-column {
+  flex: 1;
+}
+
+.right-column {
+  flex: 1;
+}
+
+.label {
+  font-weight: bold;
+}
+
+.company-peers {
+  list-style-type: none;
+  padding: 0;
+}
+
+.company-info {
+  text-align: center;
+}
+
+.news-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.news-item {
+  display: flex;
+  border: 1px solid #ccc;
+}
+
+.news-image {
+  width: 25%;
+  height: auto;
+}
+
+.news-content {
+  flex-grow: 1;
+  padding: 10px;
+  text-align: center;
+}
+
+.bi-star-fill {
+  color: #fedd04;
+}
+
+.marketStatus {
+  text-align: center;
+}
+
+.sentiments-table {
+  margin: auto;
+  width: 50%;
+  padding: 0 50%;
+}
+
+.sentiments-table th,
+.sentiments-table td {
+  border-bottom: 1px solid rgb(0, 0, 0, 0.5);
+  text-align: center;
+  padding: 1%;
+}
+
+.modal-header {
+  display: block;
+}
+
+.news-modal-title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-subtitle {
+  display: block;
+}
+
+.modal-footer {
+  display: block;
+}
+
+.share-section {
+  margin-right: 20px;
+}

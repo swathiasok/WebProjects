@@ -2,11 +2,25 @@
   <div class="row justify-content-center">
     <div class="col-12 col-md-8 col-lg-4 text-center">
       <h2 class="title">STOCK SEARCH</h2>
-      <form>
-        <div class="mb-3 search-container">
-          <input type="text" class="form-control stock-symbol" placeholder="Enter stock ticker symbol">
-          <i class="fas fa-search"></i><i class="fas fa-times"></i>
-        </div>
+      <form #searchForm="ngForm">
+        <mat-form-field class="mb-3 search-container" #searchContainer>
+          <input type="text" class="form-control stock-symbol" matInput [formControl]="searchControl"
+            placeholder="Enter stock ticker symbol" [matAutocomplete]="auto">
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngIf="isLoadingOptions" class="is-loading">
+              <mat-spinner diameter="25"></mat-spinner>
+            </mat-option>
+            <mat-option *ngFor="let option of options$ | async" [value]="option.symbol"
+              (onSelectionChange)="onSelectOption(option)">
+              {{ option.symbol }} | {{ option.description }}
+            </mat-option>
+          </mat-autocomplete>
+          <i class="fas fa-search" (click)="searchClick(searchControl.value)"></i><i class="fas fa-times"
+            (click)="clearForm(searchForm)"></i>
+        </mat-form-field>
+        <ngb-alert *ngIf="(options$ | async)?.length === 0 && showAlert" type="danger" [dismissible]="false">
+          No data found. Please enter a valid Ticker
+        </ngb-alert>
       </form>
     </div>
   </div>

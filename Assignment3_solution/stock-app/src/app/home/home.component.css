@@ -6,12 +6,22 @@
   padding-bottom: 5%;
 }
 
+h2,
+h3,
+h4 {
+  margin: 0;
+}
+
 .search-container {
   display: flex;
   align-items: center;
   border: 3px solid #1d279d;
   border-radius: 30px;
   padding: 1.5%;
+}
+
+.search-container:hover {
+  background-color: white;
 }
 
 .form-control:focus {

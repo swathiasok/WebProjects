@@ -1,0 +1,43 @@
+.watchlist-div {
+  width: 70%;
+  margin: 2% auto;
+}
+
+.empty-watchlist {
+  background-color: #fef1c9;
+  text-align: center;
+  padding: 1%;
+  margin-top: 1%;
+  border: 0.5px solid #ffe7af;
+  border-radius: 5px;
+}
+
+.card {
+  display: flex;
+  margin-bottom: 1%;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.bottom {
+  display: flex;
+  flex-direction: row;
+}
+
+.button-wrapper {
+  flex: 0 0 auto;
+}
+
+.left,
+.right {
+  flex: 1;
+}
+
+.close {
+  background: none;
+  border: none;
+  padding: 0;
+}

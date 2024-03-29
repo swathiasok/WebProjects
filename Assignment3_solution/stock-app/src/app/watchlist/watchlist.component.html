@@ -1,1 +1,36 @@
-<p>watchlist works!</p>
+<div class="container watchlist-div">
+  <h1>My Watchlist</h1>
+
+  <div class="container" *ngIf="showSpinner">
+    <div class="text-center">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+  </div>
+  <div class="row" *ngIf="!showSpinner">
+    <div class="empty-watchlist" *ngIf="watchlist.length === 0">
+      Currently you don't have any stock in your watchlist.
+    </div>
+    <div class="col-md-12" *ngFor="let item of watchlist">
+      <a [routerLink]="['/search', item.symbol]">
+        <div class="card">
+          <div class="card-body">
+            <div class="button-wraper">
+              <button type="button" class="close" (click)="removeTickerFromMongoDB(item.symbol)">x
+              </button>
+            </div>
+            <div class="bottom">
+              <div class="left">
+                <h5 class="card-title">{{ item.symbol }}</h5>
+                <p class="card-text">{{ item.name }}</p>
+              </div>
+              <div class="right">
+                <p class="card-text">{{ item.price }}</p>
+                <p class="card-text">{{ item.change }} ( {{item.change_percent}} %)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
