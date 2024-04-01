@@ -23,7 +23,6 @@ export class LocalStorageService {
 
   // Set a value in local storage
   setItem(value: string): void {
-    console.log(value);
     localStorage.setItem(this.symbol, value);
   }
 

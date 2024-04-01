@@ -27,42 +27,44 @@ export class StockAppService {
   }
 
   lookupSymbol(query: string): Observable<any> {
-    return this.http.get<any>(`http://localhost:3000/lookup_symbol?q=${query}`);
+    return this.http.get<any>(
+      `https://clean-yew-418817.uc.r.appspot.com/lookup_symbol?q=${query}`
+    );
   }
 
   getCompanyData(query: string): Observable<any> {
     return this.http.get<any>(
-      `http://localhost:3000/company_data?symbol=${query}`
+      `https://clean-yew-418817.uc.r.appspot.com/company_data?symbol=${query}`
     );
   }
 
   getQuoteData(query: string): Observable<any> {
     return this.http.get<any>(
-      `http://localhost:3000/quote_data?symbol=${query}`
+      `https://clean-yew-418817.uc.r.appspot.com/quote_data?symbol=${query}`
     );
   }
 
   getHourlyChartsData(query: string): Observable<any> {
     return this.http.get<any>(
-      `http://localhost:3000/hourly_chart_data?symbol=${query}`
+      `https://clean-yew-418817.uc.r.appspot.com/hourly_chart_data?symbol=${query}`
     );
   }
 
   getChartsData(query: string): Observable<any> {
     return this.http.get<any>(
-      `http://localhost:3000/chart_data?symbol=${query}`
+      `https://clean-yew-418817.uc.r.appspot.com/chart_data?symbol=${query}`
     );
   }
 
   getCompanyNews(query: string): Observable<any> {
     return this.http.get<any>(
-      `http://localhost:3000/company_news?symbol=${query}`
+      `https://clean-yew-418817.uc.r.appspot.com/company_news?symbol=${query}`
     );
   }
 
   getCompanyInsights(query: string): Observable<any> {
     return this.http.get<any>(
-      `http://localhost:3000/company_insights?symbol=${query}`
+      `https://clean-yew-418817.uc.r.appspot.com/company_insights?symbol=${query}`
     );
   }
 
@@ -73,7 +75,7 @@ export class StockAppService {
     }).toString();
 
     return this.http.get<any>(
-      `http://localhost:3000/insert_data?${queryParams}`
+      `https://clean-yew-418817.uc.r.appspot.com/insert_data?${queryParams}`
     );
   }
 
@@ -95,31 +97,37 @@ export class StockAppService {
     }).toString();
 
     return this.http.get<any>(
-      `http://localhost:3000/insert_stock_data?${queryParams}`
+      `https://clean-yew-418817.uc.r.appspot.com/insert_stock_data?${queryParams}`
     );
   }
 
   removeData(query: string): Observable<any> {
     return this.http.get<any>(
-      `http://localhost:3000/remove_data?symbol=${query}`
+      `https://clean-yew-418817.uc.r.appspot.com/remove_data?symbol=${query}`
     );
   }
 
   selectData(): Observable<any> {
-    return this.http.get<any>(`http://localhost:3000/select_data`);
+    return this.http.get<any>(
+      `https://clean-yew-418817.uc.r.appspot.com/select_data`
+    );
   }
 
   selectStockData(): Observable<any> {
-    return this.http.get<any>(`http://localhost:3000/select_stock_data`);
+    return this.http.get<any>(
+      `https://clean-yew-418817.uc.r.appspot.com/select_stock_data`
+    );
   }
 
   selectOneStockData(query: string): Observable<any> {
     return this.http.get<any>(
-      `http://localhost:3000/select_ticker_stock_data?symbol=${query}`
+      `https://clean-yew-418817.uc.r.appspot.com/select_ticker_stock_data?symbol=${query}`
     );
   }
 
   getWalletMoney(): Observable<any> {
-    return this.http.get<any>(`http://localhost:3000/get_wallet_money`);
+    return this.http.get<any>(
+      `https://clean-yew-418817.uc.r.appspot.com/get_wallet_money`
+    );
   }
 }

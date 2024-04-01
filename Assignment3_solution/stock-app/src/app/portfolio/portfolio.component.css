@@ -1,3 +1,26 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  padding: 0;
+  margin: 0;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.close {
+  border: none;
+  text-decoration: underline;
+  background-color: white;
+  color: blue;
+}
+
 .empty-portfolio {
   background-color: #fef1c9;
   text-align: center;
@@ -5,4 +28,70 @@
   margin-top: 1%;
   border: 0.5px solid #ffe7af;
   border-radius: 5px;
+}
+
+.portfolio-container {
+  width: 65%;
+  margin: 0 auto;
+  overflow: scroll;
+}
+
+
+@media (max-width: 400px) {
+  .portfolio-container {
+    width: 85%;
+  }
+}
+
+.title {
+  font-size: 1.8rem;
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-end;
+}
+
+.symbol {
+  padding-right: 1%;
+}
+
+.card {
+  margin-bottom: 1.5%;
+}
+
+.walletmoney {
+  margin: 1% 0;
+}
+
+.buy-btn {
+  margin-right: 1%;
+}
+
+.portfolio-label,
+.portfolio-value {
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+#quantity {
+  display: inline-block;
+  width: 75%;
+}
+
+#quantity:focus {
+  box-shadow: 3 3 2px blue;
+}
+
+footer {
+  background-color: #e1e1e1;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  margin-top: 2%;
+  padding: 0.8% 0;
+  font-weight: bold;
+  font-size: 0.8rem;
 }

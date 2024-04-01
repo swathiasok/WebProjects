@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, NgForm } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { StockAppService } from '../stock-app.service';
@@ -23,9 +23,14 @@ export class HomeComponent implements OnInit {
   options$: Observable<any[]>;
   isLoadingOptions = false;
   showSearchDetails = false;
-  showAlert: boolean = true;
+  showAlert: boolean = false;
+  search: string = 'Enter stock ticker symbol ';
 
-  constructor(private stockService: StockAppService, private router: Router) {}
+  constructor(
+    private stockService: StockAppService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
     this.options$ = this.searchControl.valueChanges.pipe(
@@ -38,6 +43,9 @@ export class HomeComponent implements OnInit {
           return of([]);
         }
         return this.stockService.lookupSymbol(query).pipe(
+          tap((data) => {
+            console.log(data['result']);
+          }),
           map((data) =>
             data['result']
               .filter((item: any) => !item.symbol.includes('.'))
@@ -47,6 +55,12 @@ export class HomeComponent implements OnInit {
               }))
           ),
           tap((results) => {
+            console.log(results);
+            if (results.length == 0) {
+              this.showAlert = true;
+            } else {
+              this.showAlert = false;
+            }
             this.isLoadingOptions = false;
             this.showContainer = results.length > 0;
             this.stockService.setSearchcontainer(this.showContainer);
@@ -75,5 +89,9 @@ export class HomeComponent implements OnInit {
 
   updateSearchControl(symbol: string): void {
     this.searchControl.setValue(symbol);
+  }
+
+  isHomeRoute(): boolean {
+    return this.route.snapshot.url.join('/') === 'search/home';
   }
 }

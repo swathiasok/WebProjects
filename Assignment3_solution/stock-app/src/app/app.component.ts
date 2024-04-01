@@ -12,6 +12,7 @@ export class AppComponent {
   title = 'stock-app';
   isNavbarCollapsed = true;
   symbol: string;
+  activeLink: string = 'search';
 
   constructor(
     private stockService: StockAppService,
@@ -23,14 +24,23 @@ export class AppComponent {
     this.localStorageService.clear();
   }
 
+  goToPortfolio(): void {
+    this.activeLink = 'portfolio';
+    this.localStorageService.setItem(this.router.url.split('/')[2]);
+    this.router.navigate(['/portfolio']);
+  }
+
   goToWatchlist(): void {
+    this.activeLink = 'watchlist';
     this.localStorageService.setItem(this.router.url.split('/')[2]);
     this.router.navigate(['/watchlist']);
   }
 
   goToSearch(): void {
+    this.activeLink = 'search';
     this.symbol = this.localStorageService.getItem();
     console.log(this.symbol);
+
     this.router.navigate(['/search', this.symbol]);
   }
 }

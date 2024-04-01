@@ -22,6 +22,7 @@ export class PortfolioComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.showSpinner = true;
     this.getWalletMoneyFromMongoDB();
   }
 

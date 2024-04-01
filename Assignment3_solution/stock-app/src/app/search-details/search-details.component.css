@@ -1,59 +1,90 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  padding: 0;
+  margin: 0;
+}
+
 .stock-container {
-  width: 80%;
+  width: 70%;
+  padding-top: 2%;
+  max-height: 60%;
+  overflow: scroll;
+}
+
+@media (max-width: 400px) {
+  .stock-container {
+    width: 100%;
+  }
+}
+
+.cmpny-detail {
+  color: #61606b;
+  text-align: center;
+}
+
+.col-2,
+.col-5 {
+  text-align: center;
+}
+
+.chnge-data {
+  font-size: 1.1rem;
+  font-weight: bold;
 }
 
 .img-div {
   display: flex;
-  width: 50%;
+  width: 100%;
   height: auto;
-  margin: 0 auto;
+  margin: 0 25%;
+  padding: 0;
 }
 
-.img-fluid {
+@media(max-width: 400px) {
+  .img-div {
+    width: 100px;
+  }
+}
+
+.ticker-logo {
   align-items: stretch;
+  width: 50%;
+  height: auto;
 }
 
 .tabs {
   margin-top: 5%;
 }
 
-::ng-deep .mdc-text-field--filled {
-  background-color: white !important;
+
+.price-info {
+  margin-left: 15%;
+  padding: 5% 0;
+  line-height: 1.5;
 }
 
-::ng-deep .mat-mdc-form-field:hover {
-  background-color: white !important;
+@media (max-width: 400px) {
+  .price-info {
+    margin: 0;
+    text-align: center;
+  }
 }
 
-
-::ng-deep .mdc-line-ripple {
-  display: none !important;
+#about-company {
+  text-decoration: underline;
+  text-align: center;
+  margin: 2% 0 4% 0;
+  font-size: 1.2rem;
 }
 
-::ng-deep .mat-mdc-form-field-input-control.mdc-text-field__input,
-.mat-mdc-text-field-wrapper {
-  display: inline-block;
-  width: 80%;
-}
-
-::ng-deep .mat-mdc-form-field-subscript-wrapper {
-  display: none;
-}
-
-.summary-content {
-  display: flex;
-}
-
-.left-column {
-  flex: 1;
-}
-
-.right-column {
-  flex: 1;
-}
-
-.label {
-  font-weight: bold;
+.buy-btn {
+  margin-top: 10%;
+  margin-right: 3%;
 }
 
 .company-peers {
@@ -63,27 +94,42 @@
 
 .company-info {
   text-align: center;
+  line-height: 2;
 }
 
-.news-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+.news-box {
+  display: flex;
 }
 
 .news-item {
-  display: flex;
   border: 1px solid #ccc;
+  margin: 4% 0 0 0;
+  padding: 2%;
+  padding-left: 0;
+  border-radius: 5px;
+  background-color: #fbfbfb;
 }
 
 .news-image {
-  width: 25%;
-  height: auto;
+  display: block;
+  /* border-radius: 15%; */
+  padding-bottom: 1%;
+}
+
+@media(max-width: 400px) {
+  .news-item {
+    margin: 5% 3% 0 3%;
+    padding: 4% 1% 8% 1%;
+  }
+
+  .news-image {
+    border-radius: 5%;
+    margin: 0 auto;
+  }
 }
 
 .news-content {
-  flex-grow: 1;
-  padding: 10px;
+  font-size: 0.9rem;
   text-align: center;
 }
 
@@ -93,6 +139,7 @@
 
 .marketStatus {
   text-align: center;
+  padding-top: 1%;
 }
 
 .sentiments-table {
@@ -103,13 +150,25 @@
 
 .sentiments-table th,
 .sentiments-table td {
-  border-bottom: 1px solid rgb(0, 0, 0, 0.5);
+  border-bottom: 1px solid #e9e9e9;
   text-align: center;
   padding: 1%;
 }
 
-.modal-header {
-  display: block;
+@media (max-width: 400px) {
+  .sentiments-table {
+    width: 80%;
+  }
+
+  .sentiments-table th,
+  .sentiments-table td {
+    padding: 2%;
+  }
+}
+
+.news-header,
+.news-footer {
+  display: block !important;
 }
 
 .news-modal-title {
@@ -117,14 +176,79 @@
   justify-content: space-between;
 }
 
+
 .modal-subtitle {
   display: block;
+  color: #9d9d9d;
+  font-weight: bold;
 }
 
-.modal-footer {
+.news-footer {
   display: block;
+  margin: 5% 3% 3% 3%;
+  border: 1px solid #cacaca;
+  border-radius: 5px;
+  padding-bottom: 0;
 }
 
 .share-section {
   margin-right: 20px;
+  color: #757577;
+}
+
+.news-summary {
+  color: #757577;
+}
+
+.more-details {
+  color: #9a9a9a;
+}
+
+.icon-section .share-icon {
+  color: black;
+  padding: 3%;
+}
+
+.close {
+  border: none;
+  text-decoration: underline;
+  background-color: white;
+  color: blue;
+}
+
+.top-row {
+  text-align: center;
+}
+
+.bottom-row {
+  margin: 3%;
+}
+
+.sentiments-title {
+  margin: 1%;
+}
+
+#quantity {
+  display: inline-block;
+  width: 75%;
+}
+
+#quantity:focus {
+  box-shadow: 3 3 2px blue;
+}
+
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+footer {
+  background-color: #e1e1e1;
+  width: 100%;
+  text-align: center;
+  margin-top: 2%;
+  padding: 0.8% 0;
+  font-weight: bold;
+  font-size: 0.8rem;
 }

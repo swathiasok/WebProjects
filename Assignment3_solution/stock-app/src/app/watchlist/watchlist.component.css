@@ -1,13 +1,29 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  padding: 0;
+  margin: 0;
+}
+
 .watchlist-div {
   width: 70%;
   margin: 2% auto;
 }
 
+@media (max-width: 400px) {
+  .watchlist-div {
+    width: 100%;
+    padding: 0 2%;
+  }
+}
+
 .empty-watchlist {
   background-color: #fef1c9;
   text-align: center;
-  padding: 1%;
-  margin-top: 1%;
   border: 0.5px solid #ffe7af;
   border-radius: 5px;
 }
@@ -17,7 +33,16 @@
   margin-bottom: 1%;
 }
 
+.card-title {
+  margin-top: 1%;
+}
+
+a {
+  text-decoration: none;
+}
+
 .card-body {
+  padding: 1% 2% 2% 2%;
   display: flex;
   flex-direction: column;
 }
@@ -40,4 +65,23 @@
   background: none;
   border: none;
   padding: 0;
+  color: rgb(158, 158, 158);
+  font-size: 0.7rem;
+}
+
+.watchlist-title {
+  font-size: 1.8rem;
+}
+
+footer {
+  background-color: #e1e1e1;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  margin-top: 2%;
+  padding: 0.8% 0;
+  font-weight: bold;
+  font-size: 0.8rem;
 }

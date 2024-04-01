@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Khula:wght@300;400;700&display=swap');
 
+
 .navbar {
   background-color: #1d279d;
   padding: 0.4rem 1.7rem;
@@ -24,19 +25,28 @@
 }
 
 .active {
-  border: 1px solid white;
-  border-radius: 12px;
+  border: 1px solid white !important;
+  border-radius: 12px !important;
 }
 
 footer {
+  background-color: #e1e1e1;
   position: fixed;
+  left: 0;
   bottom: 0;
   width: 100%;
   text-align: center;
-  background-color: #e1e1e1;
-  padding: 0.7rem 0 0.5rem 0 !important;
-  border-top: 1px solid #e7e7e7;
-  font-family: 'Khula', sans-serif;
-  font-weight: 700;
-  font-size: 0.7rem;
+  margin-top: 2%;
+  padding: 0.8% 0;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.2);
+  opacity: 0.5;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
 }

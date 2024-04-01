@@ -1,100 +1,112 @@
-<ngb-alert *ngIf="showAlert" [dismissible]="true" [type]="showAlert.type" style="text-align: center;">
-  {{showAlert.message}}
-</ngb-alert>
-<h1>My Portfolio</h1>
-<div class="container" *ngIf="showSpinner">
-  <div class="text-center">
-    <mat-spinner diameter="50"></mat-spinner>
-  </div>
-</div>
-<div class="container" *ngIf="!showSpinner">
-  <h2>Money in Wallet: ${{ walletMoney }}</h2>
-  <div class="empty-portfolio" *ngIf="stocks.length === 0">
-    Currently you don't have any stock.
-  </div>
-  <div class="row">
-    <div class="col-md-12" *ngFor="let item of stocks">
-      <div class="card mt-4">
-        <div class="card-header">
-          {{ item.symbol }}
-          {{ item.name }}
-        </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-md-4">
+<div style="min-height: 100vh;">
+  <div class="portfolio-container mt-5 mb-3 .body-flex-wrapper">
+    <ngb-alert *ngIf="showAlert" [dismissible]="true" [type]="showAlert.type" style="text-align: center;">
+      {{showAlert.message}}
+    </ngb-alert>
+    <h1 class="title">My Portfolio</h1>
+    <div class="spinner-container" *ngIf="showSpinner">
+      <div class="text-center">
+        <mat-spinner diameter="50" style="margin: 0 auto;"></mat-spinner>
+      </div>
+    </div>
+    <h2 class="walletmoney mt-2">Money in Wallet: ${{ walletMoney }}</h2>
+    <div class="empty-portfolio p-3 mt-3 mt-lg-3" *ngIf="!showSpinner && stocks.length === 0">
+      Currently you don't have any stock.
+    </div>
+    <div class="row">
+      <div class="col-md-12" *ngFor="let item of stocks">
+        <div class="card">
+          <div class="card-header">
+            <h1 class="symbol">{{ item.symbol }}</h1>
+            <h3 style="color: #686868;">{{ item.name }}</h3>
+          </div>
+          <div class="card-body row">
+            <div class="col-8 col-md-3">
               <p class="portfolio-label">Quantity:</p>
               <p class="portfolio-label">Avg. cost/share:</p>
               <p class="portfolio-label">Total cost:</p>
             </div>
-            <div class="col-md-2">
+            <div class="col-4 col-md-3">
               <p class="portfolio-value">{{ item.quantity || 0}}</p>
               <p class="portfolio-value">{{ (item.buy_total / item.quantity || 0) | number:'1.2-2' }}</p>
-              <p class="portfolio-value">{{ item.buy_total }}</p>
+              <p class="portfolio-value">{{ item.buy_total  | number:'1.2-2' }}</p>
             </div>
-            <div class="col-md-4">
+            <div class="col-8 col-md-3">
               <p class="portfolio-label">Change:</p>
               <p class="portfolio-label">Current price:</p>
               <p class="portfolio-label">Market value:</p>
             </div>
-            <div class="col-md-2">
+            <div class="col-4 col-md-3"
+              [style.color]="item.current_price - (item.buy_total / item.quantity) > 0 ? 'green' : 'red'">
               <p class="portfolio-value">
-                {{ (item.current_price - (item.buy_total / item.quantity || 0)) | number:'1.2-2' }}</p>
-              <p class="portfolio-value">{{ item.current_price }}</p>
+                <ng-container *ngIf="item.current_price - (item.buy_total / item.quantity) >= 0; else downCaret">
+                  <i class="bi bi-caret-up-fill"></i>
+                </ng-container>
+                <ng-template #downCaret>
+                  <i class="bi bi-caret-down-fill"></i>
+                </ng-template>
+                {{ (item.current_price - (item.buy_total / item.quantity || 0)) | number:'1.2-2' }}
+              </p>
+              <p class="portfolio-value">{{ item.current_price  | number:'1.2-2' }}</p>
               <p class="portfolio-value">{{ (item.current_price * item.quantity) | number:'1.2-2' }}</p>
             </div>
           </div>
-        </div>
-        <div class="card-footer">
-          <button class="btn btn-primary mr-2" (click)="openBuy(buyContent)">Buy</button>
-          <ng-template #buyContent let-modal>
-            <div class="modal-header">
-              <h4 class="modal-title">{{ item.symbol }}</h4>
-              <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <p>Current price: {{ item.current_price }}</p>
-              <p>Money in Wallet: ${{ walletMoney }}</p>
-              <label for="quantity">Quantity:</label>
-              <input type="number" id="quantity" name="quantity" class="form-control" [(ngModel)]="quantity"
-                (input)="calculateTotal(item.current_price)">
-              <p *ngIf="quantity > 0 && isBuy(item.current_price)" style="color: rgb(218, 7, 7);">Not enough money in
-                wallet!</p>
+          <div class="card-footer">
+            <button class="buy-btn btn btn-primary mr-2" (click)="openBuy(buyContent)">Buy</button>
+            <ng-template #buyContent let-modal>
+              <div class="modal-header">
+                <h4 class="modal-title">{{ item.symbol }}</h4>
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>Current price: {{ item.current_price }}</p>
+                <p>Money in Wallet: ${{ walletMoney }}</p>
+                <p>Quantity: <input type="number" id="quantity" [(ngModel)]="quantity"
+                    (input)="calculateTotal(item.current_price)"></p>
+                <p *ngIf="quantity > 0 && isBuy(item.current_price)" style="color: rgb(218, 7, 7);">Not enough money in
+                  wallet!</p>
 
-            </div>
-            <div class="modal-footer">
-              <p>Total: {{ calculateTotal(item.current_price) | number:'1.2-2' }}</p>
-              <button type="button" class="btn btn-success" [disabled]="isBuy(item.current_price)"
-                (click)="buyStock(item.current_price, item.symbol, item.name)">Buy</button>
-            </div>
-          </ng-template>
-          <button class="btn btn-danger mr-2" (click)="openSell(sellContent)">Sell</button>
-          <ng-template #sellContent let-modal>
-            <div class="modal-header">
-              <h4 class="modal-title">{{ item.symbol }}</h4>
-              <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <p>Current price: {{ item.current_price }}</p>
-              <p>Money in Wallet: ${{ walletMoney }}</p>
-              <label for="quantity">Quantity:</label>
-              <input type="number" id="quantity" name="quantity" class="form-control" [(ngModel)]="quantity"
-                (input)="calculateTotal(item.current_price)">
-              <p *ngIf="quantity > 0 && isSell(item.quantity)" style="color: rgb(218, 7, 7);">You cannot sell the stocks
-                that you
-                don't have!</p>
-            </div>
-            <div class="modal-footer">
-              <p>Total: {{ calculateTotal(item.current_price) | number:'1.2-2' }}</p>
-              <button type="button" class="btn btn-success" [disabled]="isSell(item.quantity)"
-                (click)="sellStock(item.current_price, item.symbol, item.name)">Sell</button>
-            </div>
-          </ng-template>
+              </div>
+              <div class="modal-footer">
+                <p>Total: {{ calculateTotal(item.current_price) | number:'1.2-2' }}</p>
+                <button type="button" class="btn btn-success" [disabled]="isBuy(item.current_price)"
+                  (click)="buyStock(item.current_price, item.symbol, item.name)">Buy</button>
+              </div>
+            </ng-template>
+            <button class="buy-btn btn btn-danger mr-2" (click)="openSell(sellContent)">Sell</button>
+            <ng-template #sellContent let-modal>
+              <div class="modal-header">
+                <h4 class="modal-title">{{ item.symbol }}</h4>
+                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>Current price: {{ item.current_price }}</p>
+                <p>Money in Wallet: ${{ walletMoney }}</p>
+                <p>Quantity: <input type="number" id="quantity" [(ngModel)]="quantity"
+                    (input)="calculateTotal(item.current_price)"></p>
+                <p *ngIf="quantity > 0 && isSell(item.quantity)" style="color: rgb(218, 7, 7);">You cannot sell the
+                  stocks
+                  that you
+                  don't have!</p>
+              </div>
+              <div class="modal-footer">
+                <p>Total: {{ calculateTotal(item.current_price) | number:'1.2-2' }}</p>
+                <button type="button" class="btn btn-success" [disabled]="isSell(item.quantity)"
+                  (click)="sellStock(item.current_price, item.symbol, item.name)">Sell</button>
+              </div>
+            </ng-template>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  <footer>
+    <div>
+      Powered by <a href="https://finnhub.io" target="_blank">Finnhub.io</a>
+    </div>
+  </footer>
 </div>

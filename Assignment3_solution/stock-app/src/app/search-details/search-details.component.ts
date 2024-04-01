@@ -1,16 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatTabsModule } from '@angular/material/tabs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl, NgForm } from '@angular/forms';
-import {
-  Observable,
-  Subscription,
-  forkJoin,
-  interval,
-  of,
-  switchMap,
-} from 'rxjs';
+import { Observable, Subscription, forkJoin } from 'rxjs';
 import { StockAppService } from '../stock-app.service';
 import * as Highcharts from 'highcharts';
 import StockModule from 'highcharts/modules/stock';
@@ -49,6 +41,8 @@ export class SearchDetailsComponent implements OnInit {
   marketStatus: number = 1;
   url: string;
   showSpinner: boolean = true;
+  showSellButton: boolean;
+  search: string;
 
   searchData: any;
   quoteDataSubscription: Subscription | undefined;
@@ -71,7 +65,8 @@ export class SearchDetailsComponent implements OnInit {
     private modalService: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private cdRef: ChangeDetectorRef
   ) {}
 
   open(content: any) {
@@ -82,6 +77,7 @@ export class SearchDetailsComponent implements OnInit {
   }
 
   openNews(content: any) {
+    this.quantity = 0;
     this.modalService.open(content, {
       windowClass: 'modal-top-center',
     });
@@ -103,6 +99,7 @@ export class SearchDetailsComponent implements OnInit {
   }
 
   setDatafromLocal(storedData: {
+    starFilled: boolean;
     companyData: any;
     quoteData: any;
     peersData: any;
@@ -128,22 +125,29 @@ export class SearchDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // const elementToRemove = document.querySelector('.footer-home');
+    // if (elementToRemove) {
+    //   elementToRemove.remove();
+    // }
     this.route.paramMap.subscribe((params) => {
       this.showSpinner = true;
       this.symbol = params.get('ticker');
       this.stockService.setSymbol(this.symbol);
+      this.search = this.symbol;
 
       if (this.symbol) {
         if (this.localStorageService.getItem() == this.symbol) {
           const storedData = this.localStorageService.getData();
           this.setDatafromLocal(storedData);
+          console.log(this.starFilled);
         } else {
-          this.localStorageService.setItem(this.symbol);
           this.searchSymbol(this.symbol);
         }
+        this.localStorageService.setItem(this.symbol);
         this.searchControl.setValue(this.symbol);
         this.getWalletMoneyFromMongoDB();
         this.setQuantity(this.symbol);
+        this.checkIfTickerInWatchlist(this.symbol);
       }
     });
 
@@ -152,146 +156,11 @@ export class SearchDetailsComponent implements OnInit {
     });
   }
 
-  // searchSymbol(option: any): void {
-  //   this.checkIfTickerInWatchlist(option);
-
-  //   setInterval(() => {
-  //     this.stockService.getQuoteData(option).subscribe((data) => {
-  //       this.quoteData = data;
-  //     });
-  //   }, 15000);
-
-  //   this.stockService.getCompanyData(option).subscribe((data) => {
-  //     this.quoteData = data.quotesData;
-  //     this.companyProfileData = data.companyProfileData;
-  //     this.companyPeers = data.peersData;
-
-  //     this.calculateMarketStatus(this.quoteData);
-
-  //     //check market status
-  //     const currentTime = new Date().getTime();
-  //     const differenceInMs = currentTime - this.quoteData.t * 1000;
-  //     const date = new Date(this.quoteData.t * 1000);
-
-  //     if (differenceInMs > 300000) {
-  //       this.marketStatus = 0;
-  //     } else {
-  //       this.marketStatus = 1;
-  //     }
-
-  //     //Convert from epoch to datetime
-  //     this.quoteData.t = `${date.getFullYear()}-${(
-  //       '0' +
-  //       (date.getMonth() + 1)
-  //     ).slice(-2)}-${('0' + date.getDate()).slice(-2)} ${(
-  //       '0' + date.getHours()
-  //     ).slice(-2)}:${('0' + date.getMinutes()).slice(-2)}:${(
-  //       '0' + date.getSeconds()
-  //     ).slice(-2)}`;
-  //   });
-
-  //   this.stockService.getCompanyNews(option).subscribe((data) => {
-  //     this.companyNews = data
-  //       .filter((news: any) => news.image && news.headline)
-  //       .slice(0, 20)
-  //       .map((news: any) => {
-  //         const timestamp = news.datetime;
-  //         const date = new Date(timestamp * 1000);
-  //         const formattedDate = date.toLocaleDateString('en-US', {
-  //           year: 'numeric',
-  //           month: 'long',
-  //           day: 'numeric',
-  //         });
-  //         return { ...news, formattedDate };
-  //       });
-  //   });
-
-  //   this.stockService.getHourlyChartsData(option).subscribe((data) => {
-  //     this.hourlyChartsData = data;
-  //     this.buildHourlyChart();
-  //   });
-
-  //   this.stockService.getChartsData(option).subscribe((data) => {
-  //     this.chartsData = data;
-  //     this.buildChart();
-  //   });
-
-  //   this.stockService.getCompanyInsights(option).subscribe((data) => {
-  //     let avg_mspr = 0,
-  //       positive_mspr = 0,
-  //       negative_mspr = 0,
-  //       count = 0,
-  //       positive_count = 0,
-  //       negative_count = 0;
-  //     let avg_change = 0,
-  //       positive_change = 0,
-  //       negative_change = 0;
-
-  //     for (let i = 0; i < data.sentimentsData.data.length; i++) {
-  //       const mspr = data.sentimentsData.data[i]['mspr'];
-  //       const change = data.sentimentsData.data[i]['change'];
-  //       if (mspr !== undefined && change !== undefined) {
-  //         avg_mspr += mspr;
-  //         avg_change += change;
-  //         count++;
-  //         if (mspr > 0) {
-  //           positive_mspr += mspr;
-  //           positive_change += change;
-  //           positive_count++;
-  //         } else if (mspr < 0) {
-  //           negative_mspr += mspr;
-  //           negative_change += change;
-  //           negative_count++;
-  //         }
-  //       } else {
-  //         console.log('No data found');
-  //       }
-  //     }
-
-  //     if (count > 0) {
-  //       avg_mspr /= count;
-  //       positive_mspr /= positive_count;
-  //       negative_mspr /= negative_count;
-  //       avg_change /= count;
-  //       positive_change /= positive_count;
-  //       negative_change /= negative_count;
-  //     }
-
-  //     this.insiderSentiments = {
-  //       avg_mspr: +avg_mspr.toFixed(2),
-  //       positive_mspr: +positive_mspr.toFixed(2),
-  //       negative_mspr: +negative_mspr.toFixed(2),
-  //       avg_change: +avg_change.toFixed(2),
-  //       positive_change: +positive_change.toFixed(2),
-  //       negative_change: +negative_change.toFixed(2),
-  //     };
-
-  //     this.buildRecommendationTrends(data);
-  //     this.buildEPSSurprises(data);
-  //   });
-
-  //   this.localStorageService.saveData({
-  //     companyData: this.companyProfileData,
-  //     quoteData: this.quoteData,
-  //     peersData: this.companyPeers,
-  //     news: this.companyNews,
-  //     chartsData: this.chartsData,
-  //     hourlyChartsData: this.hourlyChartsData,
-  //   });
-  // }
-
   searchSymbol(option: any): void {
-    this.checkIfTickerInWatchlist(option);
-
-    this.quoteDataSubscription = interval(15000)
-      .pipe(switchMap(() => this.stockService.getQuoteData(option)))
-      .subscribe((data) => {
-        this.quoteData = data;
-      });
-
     setInterval(() => {
-      this.stockService.getQuoteData(option).subscribe((data) => {
-        this.quoteData = data;
+      this.stockService.getCompanyData(option).subscribe((data) => {
+        this.quoteData = data.quotesData;
+        this.calculateMarketStatus(this.quoteData);
       });
     }, 15000);
 
@@ -439,11 +308,12 @@ export class SearchDetailsComponent implements OnInit {
       xAxis: {
         categories: data.earningsData.map(
           (item: { period: any; surprise: any }) =>
-            `${item.period} Surprise: ${item.surprise}`
+            `${item.period} <br> Surprise: ${item.surprise}`
         ),
         labels: {
           style: {
-            fontSize: '10px',
+            fontSize: '12px',
+            whiteSpace: 'normal',
           },
         },
       },
@@ -478,6 +348,7 @@ export class SearchDetailsComponent implements OnInit {
   buildHourlyChart() {
     this.hourlyCharts = Highcharts;
     let data = this.hourlyChartsData;
+    let chartColor = data.chartColor;
 
     const time = data.time.map((epochTime: number) => {
       const date = new Date(epochTime);
@@ -493,6 +364,10 @@ export class SearchDetailsComponent implements OnInit {
       },
       title: {
         text: `${data.ticker} Hourly Price Variation`,
+        style: {
+          color: '#9d9d9d',
+          fontSize: '1rem',
+        },
       },
       xAxis: {
         categories: time,
@@ -506,6 +381,11 @@ export class SearchDetailsComponent implements OnInit {
           opposite: true,
         },
       ],
+      plotOptions: {
+        series: {
+          color: chartColor,
+        },
+      },
       series: [
         {
           type: 'line',
@@ -522,6 +402,8 @@ export class SearchDetailsComponent implements OnInit {
   buildChart() {
     this.SMACharts = Highcharts;
     let data = this.chartsData;
+
+    console.log(data);
 
     this.SMAChartOptions = {
       chart: {
@@ -575,6 +457,7 @@ export class SearchDetailsComponent implements OnInit {
 
       xAxis: {
         type: 'datetime',
+        ordinal: true,
       },
 
       yAxis: [
@@ -623,7 +506,6 @@ export class SearchDetailsComponent implements OnInit {
           id: 'volume',
           data: data.volume,
           yAxis: 1,
-          pointWidth: 5,
           grouping: false,
         },
         {
@@ -654,6 +536,7 @@ export class SearchDetailsComponent implements OnInit {
     this.starFilled = !this.starFilled;
     if (this.starFilled) {
       this.insertTickerIntoMongoDB();
+      this.localStorageService.saveData({ starFilled: true });
       this.showAlert = {
         message: this.companyProfileData.ticker + ' added to Watchlist.',
         type: 'success',
@@ -726,6 +609,8 @@ export class SearchDetailsComponent implements OnInit {
           message: this.companyProfileData.ticker + ' bought successfully.',
           type: 'success',
         };
+        this.showSellButton = true;
+
         setTimeout(() => {
           this.showAlert = null;
         }, 5000);
@@ -753,7 +638,10 @@ export class SearchDetailsComponent implements OnInit {
         'sell'
       )
       .subscribe((data) => {
-        console.log('sold buy stock data');
+        if (data.delete == true) {
+          this.showSellButton = false;
+          this.currentQuantity = 0;
+        }
         this.showAlert = {
           message: this.companyProfileData.ticker + ' sold successfully.',
           type: 'danger',
