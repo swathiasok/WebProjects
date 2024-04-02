@@ -12,7 +12,7 @@ export class PortfolioComponent implements OnInit {
   walletMoney: number;
   quantity: number = 0;
   stocks: any[] = [];
-  showAlert: any;
+  showAlert: any = null;
   showSpinner: boolean = true;
 
   constructor(

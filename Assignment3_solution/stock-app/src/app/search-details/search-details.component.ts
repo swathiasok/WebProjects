@@ -1,12 +1,25 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  EventEmitter,
+  Output,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl, NgForm } from '@angular/forms';
-import { Observable, Subscription, forkJoin } from 'rxjs';
+import { Observable, Subscription, forkJoin, of } from 'rxjs';
 import { StockAppService } from '../stock-app.service';
 import * as Highcharts from 'highcharts';
 import StockModule from 'highcharts/modules/stock';
 import { LocalStorageService } from '../local-storage.service';
+import {
+  switchMap,
+  tap,
+  map,
+  distinctUntilChanged,
+  debounceTime,
+} from 'rxjs/operators';
 
 let indicators = require('highcharts/indicators/indicators');
 let vbp = require('highcharts/indicators/volume-by-price');
@@ -21,10 +34,14 @@ StockModule(Highcharts);
   styleUrls: ['./search-details.component.css'],
 })
 export class SearchDetailsComponent implements OnInit {
-  symbol: string;
+  @Output() symbolSelected = new EventEmitter<string>();
   searchControl = new FormControl();
   showContainer: boolean = true;
   options$: Observable<any[]>;
+  isLoadingOptions = false;
+  showSearchDetails = false;
+  showAlert: any;
+  symbol: string;
   companyProfileData: any;
   quoteData: any;
   companyPeers: any;
@@ -32,17 +49,17 @@ export class SearchDetailsComponent implements OnInit {
   chartsData: any;
   hourlyChartsData: any;
   insiderSentiments: any;
-  isLoadingOptions = false;
   starFilled = false;
   walletMoney: number;
   currentQuantity: number = 0;
   quantity: number = 0;
-  showAlert: any;
+  showInvalidAlert: any;
   marketStatus: number = 1;
   url: string;
-  showSpinner: boolean = true;
+  showSpinner: boolean = false;
   showSellButton: boolean;
-  search: string;
+  currentPath: string;
+  optionSelected: string;
 
   searchData: any;
   quoteDataSubscription: Subscription | undefined;
@@ -65,8 +82,7 @@ export class SearchDetailsComponent implements OnInit {
     private modalService: NgbModal,
     private route: ActivatedRoute,
     private router: Router,
-    private localStorageService: LocalStorageService,
-    private cdRef: ChangeDetectorRef
+    private localStorageService: LocalStorageService
   ) {}
 
   open(content: any) {
@@ -91,6 +107,7 @@ export class SearchDetailsComponent implements OnInit {
     this.searchControl.reset();
     searchForm.resetForm();
     this.showAlert = false;
+    this.showInvalidAlert = false;
     this.showContainer = false;
   }
 
@@ -124,33 +141,86 @@ export class SearchDetailsComponent implements OnInit {
     this.buildEPSSurprises(this.insightsData);
   }
 
-  ngOnInit(): void {
-    // const elementToRemove = document.querySelector('.footer-home');
-    // if (elementToRemove) {
-    //   elementToRemove.remove();
-    // }
-    this.route.paramMap.subscribe((params) => {
-      this.showSpinner = true;
-      this.symbol = params.get('ticker');
-      this.stockService.setSymbol(this.symbol);
-      this.search = this.symbol;
+  onSelectOption(option: any): void {
+    this.showSpinner = true;
+    this.router.navigate(['/search', option.symbol]);
+    this.showSearchDetails = true;
+  }
 
-      if (this.symbol) {
-        if (this.localStorageService.getItem() == this.symbol) {
-          const storedData = this.localStorageService.getData();
-          this.setDatafromLocal(storedData);
-          console.log(this.starFilled);
-        } else {
-          this.searchSymbol(this.symbol);
+  searchClick(option: any) {
+    this.onSelectOption(option);
+  }
+
+  updateSearchControl(symbol: string): void {
+    this.searchControl.setValue(symbol);
+  }
+
+  isHomeRoute(): boolean {
+    return this.route.snapshot.url.join('/') === 'search/home';
+  }
+
+  ngOnInit(): void {
+    this.options$ = this.searchControl.valueChanges.pipe(
+      tap(() => (this.isLoadingOptions = true)),
+      debounceTime(100),
+      distinctUntilChanged(),
+      switchMap((query) => {
+        if (!query) {
+          this.isLoadingOptions = false;
+          return of([]);
         }
-        this.localStorageService.setItem(this.symbol);
-        this.searchControl.setValue(this.symbol);
-        this.getWalletMoneyFromMongoDB();
-        this.setQuantity(this.symbol);
-        this.checkIfTickerInWatchlist(this.symbol);
+        return this.stockService.lookupSymbol(query).pipe(
+          tap((data) => {
+            console.log(data['result']);
+          }),
+          map((data) =>
+            data['result']
+              .filter((item: any) => !item.symbol.includes('.'))
+              .map((item: any) => ({
+                symbol: item.symbol,
+                description: item.description,
+              }))
+          ),
+          tap((results) => {
+            console.log(results);
+            if (results.length == 0) {
+              this.showInvalidAlert = true;
+            } else {
+              this.showInvalidAlert = false;
+            }
+            this.isLoadingOptions = false;
+            this.showContainer = results.length > 0;
+            this.stockService.setSearchcontainer(this.showContainer);
+          })
+        );
+      })
+    );
+
+    this.route.paramMap.subscribe((params) => {
+      this.symbol = params.get('ticker');
+      console.log(this.showSpinner);
+
+      if (this.symbol != 'home') {
+        this.stockService.setSymbol(this.symbol);
+        console.log('heree');
+
+        if (this.symbol) {
+          if (this.localStorageService.getItem() == this.symbol) {
+            const storedData = this.localStorageService.getData();
+            this.setDatafromLocal(storedData);
+            this.optionSelected = this.symbol;
+            this.searchControl.setValue(this.symbol);
+          } else {
+            this.searchSymbol(this.symbol);
+          }
+          this.optionSelected = this.symbol;
+          this.localStorageService.setItem(this.symbol);
+          this.getWalletMoneyFromMongoDB();
+          this.setQuantity(this.symbol);
+          this.checkIfTickerInWatchlist(this.symbol);
+        }
       }
     });
-
     this.stockService.getSearchcontainer().subscribe((show) => {
       this.showContainer = show;
     });
@@ -199,7 +269,6 @@ export class SearchDetailsComponent implements OnInit {
           hourlyChartsData: this.hourlyChartsData,
           companyInsights: this.insightsData,
         });
-
         this.calculateMarketStatus(this.quoteData);
         this.buildHourlyChart();
         this.buildChart();

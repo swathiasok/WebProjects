@@ -1,244 +1,275 @@
-<app-home></app-home>
 <div>
-  <div class="container stock-container mt-4" *ngIf="showContainer && companyProfileData && !showSpinner">
-    <div class="container" *ngIf="showSpinner">
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-4 col-md-4 col-lg-4 text-center">
+        <h1 class="title">STOCK SEARCH</h1>
+        <form #searchForm="ngForm">
+          <mat-form-field class=" search-container" #searchContainer>
+            <input type="text" class="form-control stock-symbol" matInput [formControl]="searchControl"
+              placeholder="Enter stock ticker symbol" [matAutocomplete]="auto" value="{{optionSelected}}">
+            <i class="fas fa-search" (click)="searchClick(searchControl.value)"></i><i class="fas fa-times"
+              (click)="clearForm(searchForm)"></i>
+          </mat-form-field>
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngIf="isLoadingOptions" class="is-loading">
+              <mat-spinner diameter="25"></mat-spinner>
+            </mat-option>
+            <mat-option *ngFor="let option of options$ | async" [value]="option.symbol"
+              (onSelectionChange)="onSelectOption(option)">
+              {{ option.symbol }} | {{ option.description }}
+            </mat-option>
+          </mat-autocomplete>
+        </form>
+      </div>
+    </div>
+    <ngb-alert class="invalid-ticker mt-5" *ngIf="showAlert" type="danger" [dismissible]="false">
+      No data found. Please enter a valid Ticker
+    </ngb-alert>
+  </div>
+  <div>
+    <div class="container mt-5" *ngIf="showSpinner">
       <div class="text-center">
         <mat-spinner diameter="75" style="margin: 0 auto;"></mat-spinner>
       </div>
     </div>
-    <ngb-alert *ngIf="showAlert" [dismissible]="true" [type]="showAlert.type" style="text-align: center;">
-      {{showAlert.message}}
-    </ngb-alert>
-    <div class="row">
-      <div class="col-5" style="padding-right: 0;">
-        <div class="d-flex flex-column justify-content-center align-items-center content">
-          <h1>{{ companyProfileData.ticker }}
-            <i class="bi bi-star" *ngIf="!starFilled" (click)="toggleStar()"></i>
-            <i class="bi bi-star-fill" *ngIf="starFilled" (click)="toggleStar()"></i>
-          </h1>
-          <h2 class="cmpny-detail">{{ companyProfileData.name }}</h2>
-          <p class="cmpny-detail">{{ companyProfileData.exchange }}</p>
-          <div class="d-flex justify-content-between align-items-center">
-            <button class="buy-btn btn btn-success" (click)="open(buyContent)">Buy</button>
-            <ng-template #buyContent let-modal>
-              <div class="modal-header">
-                <h4 class="modal-title">{{ companyProfileData.ticker }}</h4>
-                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <p>Current price: {{ quoteData.c }}</p>
-                <p>Money in Wallet: ${{ walletMoney }}</p>
-                <p>Quantity: <input type="number" id="quantity" [(ngModel)]="quantity" (input)="calculateTotal()"></p>
-                <p *ngIf="quantity > 0 && isBuy()" style="color: rgb(218, 7, 7);">Not enough money in wallet!</p>
-              </div>
-              <div class=" modal-footer">
-                <p>Total: {{ calculateTotal() | number:'1.2-2' }}</p>
-                <button type="button" class="btn btn-success" [disabled]="isBuy()" (click)="buyStock()">Buy</button>
-              </div>
-            </ng-template>
-            <button class="buy-btn btn btn-danger" *ngIf="showSellButton || currentQuantity !== 0"
-              (click)="openNews(sellContent)">Sell</button>
-            <ng-template #sellContent let-modal>
-              <div class="modal-header">
-                <h4 class="modal-title">{{ companyProfileData.ticker }}</h4>
-                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <p>Current price: {{ quoteData.c }}</p>
-                <p>Money in Wallet: ${{ walletMoney }}</p>
-                <p>Quantity: <input type="number" id="quantity" [(ngModel)]="quantity" (input)="calculateTotal()"></p>
-                <p *ngIf="quantity > 0 && isSell()" style="color: rgb(218, 7, 7);">You cannot sell the stocks that you
-                  don't have!</p>
-              </div>
-              <div class="modal-footer">
-                <p>Total: {{ calculateTotal() | number:'1.2-2' }}</p>
-                <button type="button" class="btn btn-success" [disabled]="isSell()"
-                  (click)="sellStock(quoteData.c, companyProfileData.ticker, companyProfileData.name)">Sell</button>
-              </div>
-            </ng-template>
+    <div class="container stock-container mt-4"
+      *ngIf="showContainer && companyProfileData && !showSpinner && symbol != 'home'">
+      <ngb-alert *ngIf="showAlert" [dismissible]="true" [type]="showAlert.type" style="text-align: center;">
+        {{showAlert.message}}
+      </ngb-alert>
+      <div class="row">
+        <div class="col-5" style="padding-right: 0;">
+          <div class="d-flex flex-column justify-content-center align-items-center content">
+            <h1>{{ companyProfileData.ticker }}
+              <i class="bi bi-star" *ngIf="!starFilled" (click)="toggleStar()"></i>
+              <i class="bi bi-star-fill" *ngIf="starFilled" (click)="toggleStar()"></i>
+            </h1>
+            <h2 class="cmpny-detail">{{ companyProfileData.name }}</h2>
+            <p class="cmpny-detail">{{ companyProfileData.exchange }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <button class="buy-btn btn btn-success" (click)="open(buyContent)">Buy</button>
+              <ng-template #buyContent let-modal>
+                <div class="modal-header">
+                  <h4 class="modal-title">{{ companyProfileData.ticker }}</h4>
+                  <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Current price: {{ quoteData.c }}</p>
+                  <p>Money in Wallet: ${{ walletMoney }}</p>
+                  <p>Quantity: <input type="number" id="quantity" [(ngModel)]="quantity" (input)="calculateTotal()"></p>
+                  <p *ngIf="quantity > 0 && isBuy()" style="color: rgb(218, 7, 7);">Not enough money in wallet!</p>
+                </div>
+                <div class=" modal-footer">
+                  <p>Total: {{ calculateTotal() | number:'1.2-2' }}</p>
+                  <button type="button" class="btn btn-success" [disabled]="isBuy()" (click)="buyStock()">Buy</button>
+                </div>
+              </ng-template>
+              <button class="buy-btn btn btn-danger" *ngIf="showSellButton || currentQuantity !== 0"
+                (click)="openNews(sellContent)">Sell</button>
+              <ng-template #sellContent let-modal>
+                <div class="modal-header">
+                  <h4 class="modal-title">{{ companyProfileData.ticker }}</h4>
+                  <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Current price: {{ quoteData.c }}</p>
+                  <p>Money in Wallet: ${{ walletMoney }}</p>
+                  <p>Quantity: <input type="number" id="quantity" [(ngModel)]="quantity" (input)="calculateTotal()"></p>
+                  <p *ngIf="quantity > 0 && isSell()" style="color: rgb(218, 7, 7);">You cannot sell the stocks that you
+                    don't have!</p>
+                </div>
+                <div class="modal-footer">
+                  <p>Total: {{ calculateTotal() | number:'1.2-2' }}</p>
+                  <button type="button" class="btn btn-success" [disabled]="isSell()"
+                    (click)="sellStock(quoteData.c, companyProfileData.ticker, companyProfileData.name)">Sell</button>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="col-2" style="padding: 0;">
+          <div class="content img-div">
+            <img src={{companyProfileData.logo}} alt="Image" class="img-fluid ticker-logo">
+          </div>
+        </div>
+        <div class="col-5" style="padding-left: 0;" [style.color]="quoteData.d > 0 ? 'green' : 'red'">
+          <div class="d-flex flex-column justify-content-center align-items-center content">
+            <h1>{{ quoteData.c }}</h1>
+            <h3 class="chnge-data">
+              <ng-container *ngIf="quoteData.d >= 0; else downCaret">
+                <i class="bi bi-caret-up-fill"></i>
+              </ng-container>
+              <ng-template #downCaret>
+                <i class="bi bi-caret-down-fill"></i>
+              </ng-template>
+              {{ quoteData.d }} ({{ quoteData.dp.toFixed(2) }}%)
+            </h3>
+            <p style="color: black;">{{ quoteData.t }}</p>
           </div>
         </div>
       </div>
-      <div class="col-2" style="padding: 0;">
-        <div class="content img-div">
-          <img src={{companyProfileData.logo}} alt="Image" class="img-fluid ticker-logo">
-        </div>
+      <div class="marketStatus" [style.color]="quoteData.d > 0 ? 'green' : 'red'">
+        <strong>
+          <p *ngIf="marketStatus === 0">
+            Market is closed {{ quoteData.t }}
+          </p>
+          <p *ngIf="marketStatus !== 0">
+            Market is open
+          </p>
+        </strong>
       </div>
-      <div class="col-5" style="padding-left: 0;" [style.color]="quoteData.d > 0 ? 'green' : 'red'">
-        <div class="d-flex flex-column justify-content-center align-items-center content">
-          <h1>{{ quoteData.c }}</h1>
-          <h3 class="chnge-data">
-            <ng-container *ngIf="quoteData.d >= 0; else downCaret">
-              <i class="bi bi-caret-up-fill"></i>
-            </ng-container>
-            <ng-template #downCaret>
-              <i class="bi bi-caret-down-fill"></i>
-            </ng-template>
-            {{ quoteData.d }} ({{ quoteData.dp.toFixed(2) }}%)
-          </h3>
-          <p style="color: black;">{{ quoteData.t }}</p>
-        </div>
-      </div>
-    </div>
-    <div class="marketStatus" [style.color]="quoteData.d > 0 ? 'green' : 'red'">
-      <strong>
-        <p *ngIf="marketStatus === 0">
-          Market is closed {{ quoteData.t }}
-        </p>
-        <p *ngIf="marketStatus !== 0">
-          Market is open
-        </p>
-      </strong>
-    </div>
-    <div class="tabs">
-      <mat-tab-group>
-        <mat-tab label="Summary">
-          <div class="summary-content p-4 p-lg-0">
-            <div class="row">
-              <div class="col-md-6 col-12">
-                <div class="left-column">
-                  <div class="price-info">
-                    <p><strong><span class="summary-label">High Price:</span></strong> {{ quoteData.h.toFixed(2) }}</p>
-                    <p><strong><span class="summary-label">Low Price:</span></strong> {{ quoteData.l.toFixed(2) }}</p>
-                    <p><strong><span class="summary-label">Open Price:</span></strong> {{ quoteData.o.toFixed(2) }}</p>
-                    <p><strong><span class="summary-label">Prev. Close:</span></strong> {{ quoteData.pc.toFixed(2) }}
-                    </p>
-                  </div>
-                  <p id="about-company">About the company</p>
-                  <div class="company-info col-12">
-                    <p><strong><span class="summary-label">IPO Start Date:</span></strong>
-                      {{ companyProfileData.ipo | slice:0:10 }}</p>
-                    <p><strong><span class="summary-label">Industry:</span></strong>
-                      {{ companyProfileData.finnhubIndustry }}</p>
-                    <p><strong><span class="summary-label">Webpage: </span> </strong><a target="_blank"
-                        href="{{companyProfileData.weburl}}">{{ companyProfileData.weburl }}</a></p>
-                    <p><strong><span class="summary-label">Company Peers:</span> </strong>
-                      <div class="company-peers">
-                        <ng-container *ngFor="let peer of companyPeers;">
-                          <a href="javascript:void(0)" (click)="PeerSearch(peer)">{{ peer }}, </a>
-                        </ng-container>
-                      </div>
+      <div class="tabs">
+        <mat-tab-group>
+          <mat-tab label="Summary">
+            <div class="summary-content p-4 p-lg-0">
+              <div class="row">
+                <div class="col-md-6 col-12">
+                  <div class="left-column">
+                    <div class="price-info">
+                      <p><strong><span class="summary-label">High Price:</span></strong> {{ quoteData.h.toFixed(2) }}
+                      </p>
+                      <p><strong><span class="summary-label">Low Price:</span></strong> {{ quoteData.l.toFixed(2) }}</p>
+                      <p><strong><span class="summary-label">Open Price:</span></strong> {{ quoteData.o.toFixed(2) }}
+                      </p>
+                      <p><strong><span class="summary-label">Prev. Close:</span></strong> {{ quoteData.pc.toFixed(2) }}
+                      </p>
+                    </div>
+                    <p id="about-company">About the company</p>
+                    <div class="company-info col-12">
+                      <p><strong><span class="summary-label">IPO Start Date:</span></strong>
+                        {{ companyProfileData.ipo | slice:0:10 }}</p>
+                      <p><strong><span class="summary-label">Industry:</span></strong>
+                        {{ companyProfileData.finnhubIndustry }}</p>
+                      <p><strong><span class="summary-label">Webpage: </span> </strong><a target="_blank"
+                          href="{{companyProfileData.weburl}}">{{ companyProfileData.weburl }}</a></p>
+                      <p><strong><span class="summary-label">Company Peers:</span> </strong>
+                        <div class="company-peers">
+                          <ng-container *ngFor="let peer of companyPeers;">
+                            <a href="javascript:void(0)" (click)="PeerSearch(peer)">{{ peer }}, </a>
+                          </ng-container>
+                        </div>
+                    </div>
                   </div>
                 </div>
+                <div class="col-md-6">
+                  <div class="right-column">
+                    <highcharts-chart [Highcharts]="hourlyCharts" [options]="hourlyChartOptions"
+                      style="width: 100%; height: 350px; display: block; ">
+                    </highcharts-chart>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+
+          <mat-tab label="Top News">
+            <div class="news-box row">
+              <div class="col-md-6 col-12" *ngFor="let news of companyNews">
+                <div class="news-item row" (click)="openNews(content)">
+                  <img [src]="news.image" class="news-image col-12 col-md-3">
+                  <div class="news-content col-12 col-md-9">
+                    <p>{{ news.headline }}</p>
+                  </div>
+                  <ng-template #content let-modal>
+                    <div class="modal-header news-header">
+                      <div class="news-modal-title">
+                        <h1 class="modal-title">{{ news.source }}</h1>
+                        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-subtitle">
+                        <p>{{ news.formattedDate }}</p>
+                      </div>
+                    </div>
+                    <div class="modal-body news-modal-body">
+                      <h2 style="line-height: 1.2;"><strong>{{ news.headline }}</strong></h2>
+                      <p class="news-summary">{{ news.summary}}</p>
+                      <p class="more-details">For more details click <a href="{{ news.url }}" target="_blank">here</a>
+                      </p>
+                    </div>
+                    <div class="modal-footer news-footer">
+                      <div class="share-section">
+                        <p>Share</p>
+                      </div>
+                      <div class="icon-section d-flex align-items-center"><span>
+                          <a target="_blank" class="share-icon twitter-share-button"
+                            [href]="'https://twitter.com/intent/tweet?text=' + encodeURLComponent(news.headline) + '&url=' + encodeURLComponent(news.url)"
+                            data-size="large">
+                            <i class="bi bi-twitter-x twitter-icon h1"></i></a></span>
+                        <span class="share-icon fb-share-button" data-href="encodeURLComponent(news.url)" data-layout=""
+                          data-size="large">
+                          <a target="_blank"
+                            href="https://www.facebook.com/sharer/sharer.php?u={{ encodeURLComponent(news.url) }}"
+                            class="fb-xfbml-parse-ignore"><i class="fa-brands fa-square-facebook fa-3x"></i></a>
+                        </span>
+                      </div>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </mat-tab>
+
+          <mat-tab label="Charts">
+            <highcharts-chart [Highcharts]="SMACharts" [options]="SMAChartOptions"
+              style="width: 100%; height: 600px; display: block; padding: 0 2%;">
+            </highcharts-chart>
+          </mat-tab>
+
+          <mat-tab label="Insights" class="insights">
+            <div class="top-row row">
+              <h2 class="sentiments-title">Insider Sentiments</h2>
+              <table class="sentiments-table col-12">
+                <thead>
+                  <tr>
+                    <th>{{ companyProfileData.name }}</th>
+                    <th>MSPR</th>
+                    <th>Change</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><b>Total</b></td>
+                    <td>{{ insiderSentiments.avg_mspr }}</td>
+                    <td>{{ insiderSentiments.avg_change }}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Positive</b></td>
+                    <td>{{ insiderSentiments.positive_mspr }}</td>
+                    <td>{{ insiderSentiments.positive_change }}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Negative</b></td>
+                    <td>{{ insiderSentiments.negative_mspr }}</td>
+                    <td>{{ insiderSentiments.negative_change }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="bottom-row row">
+              <div class="col-md-6">
+                <highcharts-chart [Highcharts]="recommendationCharts" [options]="recommendationChartOptions"
+                  style="width: 100%; height: 400px; display: block;">
+                </highcharts-chart>
               </div>
               <div class="col-md-6">
-                <div class="right-column">
-                  <highcharts-chart [Highcharts]="hourlyCharts" [options]="hourlyChartOptions"
-                    style="width: 100%; height: 350px; display: block; ">
-                  </highcharts-chart>
-                </div>
+                <highcharts-chart [Highcharts]="estimateCharts" [options]="estimateChartOptions"
+                  style="width: 100%; height: 400px; display: block; ">
+                </highcharts-chart>
               </div>
             </div>
-          </div>
-        </mat-tab>
-
-        <mat-tab label="Top News">
-          <div class="news-box row">
-            <div class="col-md-6 col-12" *ngFor="let news of companyNews">
-              <div class="news-item row" (click)="openNews(content)">
-                <img [src]="news.image" class="news-image col-12 col-md-3">
-                <div class="news-content col-12 col-md-9">
-                  <p>{{ news.headline }}</p>
-                </div>
-                <ng-template #content let-modal>
-                  <div class="modal-header news-header">
-                    <div class="news-modal-title">
-                      <h1 class="modal-title">{{ news.source }}</h1>
-                      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-subtitle">
-                      <p>{{ news.formattedDate }}</p>
-                    </div>
-                  </div>
-                  <div class="modal-body news-modal-body">
-                    <h2 style="line-height: 1.2;"><strong>{{ news.headline }}</strong></h2>
-                    <p class="news-summary">{{ news.summary}}</p>
-                    <p class="more-details">For more details click <a href="{{ news.url }}" target="_blank">here</a></p>
-                  </div>
-                  <div class="modal-footer news-footer">
-                    <div class="share-section">
-                      <p>Share</p>
-                    </div>
-                    <div class="icon-section d-flex align-items-center"><span>
-                        <a target="_blank" class="share-icon twitter-share-button"
-                          [href]="'https://twitter.com/intent/tweet?text=' + encodeURLComponent(news.headline) + '&url=' + encodeURLComponent(news.url)"
-                          data-size="large">
-                          <i class="bi bi-twitter-x twitter-icon h1"></i></a></span>
-                      <span class="share-icon fb-share-button" data-href="encodeURLComponent(news.url)" data-layout=""
-                        data-size="large">
-                        <a target="_blank"
-                          href="https://www.facebook.com/sharer/sharer.php?u={{ encodeURLComponent(news.url) }}"
-                          class="fb-xfbml-parse-ignore"><i class="fa-brands fa-square-facebook fa-3x"></i></a>
-                      </span>
-                    </div>
-                  </div>
-                </ng-template>
-              </div>
-            </div>
-          </div>
-        </mat-tab>
-
-        <mat-tab label="Charts">
-          <highcharts-chart [Highcharts]="SMACharts" [options]="SMAChartOptions"
-            style="width: 100%; height: 600px; display: block; padding: 0 2%;">
-          </highcharts-chart>
-        </mat-tab>
-
-        <mat-tab label="Insights" class="insights">
-          <div class="top-row row">
-            <h2 class="sentiments-title">Insider Sentiments</h2>
-            <table class="sentiments-table col-12">
-              <thead>
-                <tr>
-                  <th>{{ companyProfileData.name }}</th>
-                  <th>MSPR</th>
-                  <th>Change</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><b>Total</b></td>
-                  <td>{{ insiderSentiments.avg_mspr }}</td>
-                  <td>{{ insiderSentiments.avg_change }}</td>
-                </tr>
-                <tr>
-                  <td><b>Positive</b></td>
-                  <td>{{ insiderSentiments.positive_mspr }}</td>
-                  <td>{{ insiderSentiments.positive_change }}</td>
-                </tr>
-                <tr>
-                  <td><b>Negative</b></td>
-                  <td>{{ insiderSentiments.negative_mspr }}</td>
-                  <td>{{ insiderSentiments.negative_change }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="bottom-row row">
-            <div class="col-md-6">
-              <highcharts-chart [Highcharts]="recommendationCharts" [options]="recommendationChartOptions"
-                style="width: 100%; height: 400px; display: block;">
-              </highcharts-chart>
-            </div>
-            <div class="col-md-6">
-              <highcharts-chart [Highcharts]="estimateCharts" [options]="estimateChartOptions"
-                style="width: 100%; height: 400px; display: block; ">
-              </highcharts-chart>
-            </div>
-          </div>
-        </mat-tab>
-      </mat-tab-group>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
     </div>
+    <footer [class.footer-home]="symbol === 'home'" [class.footer-search]="symbol !== 'home'" *ngIf="!showSpinner">
+      <div>
+        Powered by <a href="https://finnhub.io" target="_blank">Finnhub.io</a>
+      </div>
+    </footer>
   </div>
-  <footer *ngIf="!showSpinner">
-    <div>
-      Powered by <a href="https://finnhub.io" target="_blank">Finnhub.io</a>
-    </div>
-  </footer>
-</div>

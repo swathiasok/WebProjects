@@ -23,12 +23,12 @@ export class LocalStorageService {
 
   // Set a value in local storage
   setItem(value: string): void {
-    localStorage.setItem(this.symbol, value);
+    localStorage.setItem('symbol', value);
   }
 
   // Get a value from local storage
   getItem(): string | null {
-    return localStorage.getItem(this.symbol);
+    return localStorage.getItem('symbol');
   }
 
   // Remove a value from local storage

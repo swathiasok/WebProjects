@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { StockAppService } from './stock-app.service';
 import { LocalStorageService } from './local-storage.service';
 import { Router } from '@angular/router';
 
@@ -15,7 +14,6 @@ export class AppComponent {
   activeLink: string = 'search';
 
   constructor(
-    private stockService: StockAppService,
     private router: Router,
     private localStorageService: LocalStorageService
   ) {}
@@ -24,23 +22,41 @@ export class AppComponent {
     this.localStorageService.clear();
   }
 
+  setActiveLink(): void {
+    const currentRoute = this.router.url.split('/')[1];
+    if (currentRoute === 'watchlist' || currentRoute === 'portfolio') {
+      this.activeLink = currentRoute;
+    } else {
+      this.activeLink = 'search';
+    }
+  }
+
   goToPortfolio(): void {
     this.activeLink = 'portfolio';
-    this.localStorageService.setItem(this.router.url.split('/')[2]);
+    this.symbol = this.localStorageService.getItem();
+    if (this.symbol == null) {
+      this.localStorageService.setItem(this.router.url.split('/')[2]);
+    }
     this.router.navigate(['/portfolio']);
   }
 
   goToWatchlist(): void {
     this.activeLink = 'watchlist';
-    this.localStorageService.setItem(this.router.url.split('/')[2]);
+    this.symbol = this.localStorageService.getItem();
+    if (this.symbol == null) {
+      this.localStorageService.setItem(this.router.url.split('/')[2]);
+    }
+
     this.router.navigate(['/watchlist']);
   }
 
   goToSearch(): void {
     this.activeLink = 'search';
     this.symbol = this.localStorageService.getItem();
-    console.log(this.symbol);
-
-    this.router.navigate(['/search', this.symbol]);
+    if (this.symbol == 'undefined') {
+      this.router.navigate(['/']);
+    } else {
+      this.router.navigate(['/search', this.symbol]);
+    }
   }
 }
