@@ -362,6 +362,41 @@ app.get('/insert_data', async (req, res) => {
   }
 });
 
+app.get("/insert_watchlist_data", async (req, res) => {
+  try {
+    await client.connect();
+    const query = req.query.symbol;
+    const name = req.query.name;
+
+    const existingItem = await client.db('Web3').collection("Watchlist").findOne({
+      symbol: query
+    });
+
+    if (existingItem) {
+      res.json({
+        success: false,
+        message: `${symbol} already exists in the watchlist`,
+      });
+    } else {
+      const result = await client.db('Web3').collection("Watchlist").insertOne({
+        symbol: query,
+        name: name
+
+      });
+      res.json({
+        success: true,
+        message: `${symbol} added to Watchlist`
+      });
+    }
+
+
+    console.log(`New listing created with the following id: ${result.insertedId}`);
+
+  } catch (error) {
+    console.error("Error inserting data into MongoDB:", error);
+  }
+});
+
 app.get('/remove_data', async (req, res) => {
   try {
     await client.connect();
@@ -453,7 +488,7 @@ app.get('/insert_stock_data', async (req, res) => {
       }, {
         $set: {
           'name': name,
-          'quantity': newQuantity,
+          'quantity': newQuantity.toString(),
           'buy_total': newTotal.toFixed(2),
           'buy_price': price
         }
@@ -464,7 +499,7 @@ app.get('/insert_stock_data', async (req, res) => {
         'name': name,
         'symbol': ticker,
         'buy_price': price,
-        'quantity': quantity,
+        'quantity': quantity.toString(),
         'buy_total': total,
       });
       console.log("Created");
