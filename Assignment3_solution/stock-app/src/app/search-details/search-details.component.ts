@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
   ChangeDetectorRef,
   Component,
@@ -27,12 +28,16 @@ let vbp = require('highcharts/indicators/volume-by-price');
 indicators(Highcharts);
 vbp(Highcharts);
 StockModule(Highcharts);
+=======
+import { Component } from '@angular/core';
+>>>>>>> parent of fd39339 (Assignment 3 progress)
 
 @Component({
   selector: 'app-search-details',
   templateUrl: './search-details.component.html',
   styleUrls: ['./search-details.component.css'],
 })
+<<<<<<< HEAD
 export class SearchDetailsComponent implements OnInit {
   @Output() symbolSelected = new EventEmitter<string>();
   searchControl = new FormControl();
@@ -729,3 +734,6 @@ export class SearchDetailsComponent implements OnInit {
     }
   }
 }
+=======
+export class SearchDetailsComponent {}
+>>>>>>> parent of fd39339 (Assignment 3 progress)

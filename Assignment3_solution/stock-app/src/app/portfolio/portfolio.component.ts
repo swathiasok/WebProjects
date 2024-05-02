@@ -1,12 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { StockAppService } from '../stock-app.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-portfolio',
   templateUrl: './portfolio.component.html',
   styleUrls: ['./portfolio.component.css'],
 })
+<<<<<<< HEAD
 export class PortfolioComponent implements OnInit {
   quoteData: any;
   walletMoney: number;
@@ -132,3 +131,6 @@ export class PortfolioComponent implements OnInit {
     });
   }
 }
+=======
+export class PortfolioComponent {}
+>>>>>>> parent of fd39339 (Assignment 3 progress)

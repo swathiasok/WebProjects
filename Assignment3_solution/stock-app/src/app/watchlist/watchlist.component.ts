@@ -1,12 +1,17 @@
+<<<<<<< HEAD
 import { Component, OnInit } from '@angular/core';
 import { StockAppService } from '../stock-app.service';
 import { Router } from '@angular/router';
+=======
+import { Component } from '@angular/core';
+>>>>>>> parent of fd39339 (Assignment 3 progress)
 
 @Component({
   selector: 'app-watchlist',
   templateUrl: './watchlist.component.html',
   styleUrls: ['./watchlist.component.css'],
 })
+<<<<<<< HEAD
 export class WatchlistComponent implements OnInit {
   watchlist: any[] = [];
   combinedData: any[] = [];
@@ -53,3 +58,6 @@ export class WatchlistComponent implements OnInit {
     this.router.navigate(['/search', symbol]);
   }
 }
+=======
+export class WatchlistComponent {}
+>>>>>>> parent of fd39339 (Assignment 3 progress)

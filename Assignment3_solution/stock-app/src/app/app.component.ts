@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
+<<<<<<< HEAD
 import { LocalStorageService } from './local-storage.service';
 import { Router } from '@angular/router';
+=======
+>>>>>>> parent of fd39339 (Assignment 3 progress)
 
 @Component({
   selector: 'app-root',
@@ -10,6 +13,7 @@ import { Router } from '@angular/router';
 export class AppComponent {
   title = 'stock-app';
   isNavbarCollapsed = true;
+<<<<<<< HEAD
   symbol: string;
   activeLink: string = 'search';
 
@@ -59,4 +63,6 @@ export class AppComponent {
       this.router.navigate(['/search', this.symbol]);
     }
   }
+=======
+>>>>>>> parent of fd39339 (Assignment 3 progress)
 }

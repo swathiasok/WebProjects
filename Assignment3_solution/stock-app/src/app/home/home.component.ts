@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, NgForm } from '@angular/forms';
@@ -10,12 +11,16 @@ import {
   distinctUntilChanged,
   debounceTime,
 } from 'rxjs/operators';
+=======
+import { Component } from '@angular/core';
+>>>>>>> parent of fd39339 (Assignment 3 progress)
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
+<<<<<<< HEAD
 export class HomeComponent implements OnInit {
   @Output() symbolSelected = new EventEmitter<string>();
   searchControl = new FormControl();
@@ -95,3 +100,6 @@ export class HomeComponent implements OnInit {
     return this.route.snapshot.url.join('/') === 'search/home';
   }
 }
+=======
+export class HomeComponent {}
+>>>>>>> parent of fd39339 (Assignment 3 progress)
